@@ -11,30 +11,62 @@ def detect_resume_sections(text):
     
     return sections
 
-def process_resume(resume_text, qa_chain, vector_store):
-    """Process resume, detect sections, and rewrite them."""
+def process_resume(resume_text, feedback_chain, rewrite_chain, vector_store):
+    """
+    Process the user's resume, generate both feedback and improvements for each section, and return them separately.
+    
+    Args:
+        resume_text (str): The user's current resume text.
+        feedback_chain: The LLM chain for feedback.
+        rewrite_chain: The LLM chain for rewriting sections.
+        vector_store: The vector store for retrieval.
+    
+    Returns:
+        dict: Two dictionaries, one with feedback and one with improved resume sections.
+    """
+    
+    # Step 1: Parse the resume into sections
     resume_sections = detect_resume_sections(resume_text)
+    
+    # Dictionaries to store feedback and rewritten resume sections
+    feedback = {}
     improved_resume = {}
 
+    # Step 2: Process each section
     for section in resume_sections:
         lines = section.split("\n")
-        title = lines[0].strip()
-        content = "\n".join(lines[1:]).strip()
+        title = lines[0].strip()  # Section title
+        content = "\n".join(lines[1:]).strip()  # Section content
 
+        # Query the vector store to retrieve relevant guidelines for this section
         query = f"How to write an impactful {title.lower()} section in a resume."
         relevant_docs = vector_store.similarity_search(query, k=3)
         guide_text = "\n".join([doc.page_content for doc in relevant_docs])
 
-        response = qa_chain.invoke({
-            "query": content,  
+        # Generate feedback
+        feedback_response = feedback_chain.run({
+            "resume_section": content,
+            "guide_section": guide_text
+        })
+        feedback[title] = feedback_response
+
+        # Rewriting the resume section
+        rewrite_response = rewrite_chain.run({
             "resume_section": content,
             "guide_section": guide_text
         })
 
-        improved_resume[title] = response["result"]
+        # Remove duplicated section headers
+        first_line = rewrite_response.split('\n')[0].strip()
+        if first_line.lower().startswith(title.lower()):
+            # If the first line is the same as the title, remove it
+            rewrite_response = "\n".join(rewrite_response.split('\n')[1:]).strip()
 
-    return improved_resume
+        # Store the rewritten resume section
+        improved_resume[title] = f"### {title}\n{rewrite_response}"
 
+    # Step 3: Return both the feedback and the improved resume
+    return feedback, improved_resume
 
 if __name__ == "__main__":
     pass

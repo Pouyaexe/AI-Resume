@@ -6,24 +6,18 @@ from modules.vectorstore_utils import create_vector_store, split_text
 from modules.llm_pipeline import setup_rag_pipeline
 from modules.resume_parser import process_resume
 
-# Function to get the Google API key from Streamlit secrets or .env file
+# Function to get the Google API key from Streamlit secrets (Cloud and Local)
 def get_google_api_key():
-    """Get the Google API key from Streamlit secrets (Cloud) or .env file (Local)."""
+    """Get the Google API key from Streamlit secrets."""
     try:
-        # Attempt to get the API key from Streamlit secrets (used in Cloud)
+        # Attempt to get the API key from Streamlit secrets (used in Cloud and locally via secrets.toml)
         api_key = st.secrets["GOOGLE_API_KEY"]
         os.environ["GOOGLE_API_KEY"] = api_key  # Set it in the environment for later use
         return api_key
     except KeyError:
-        # Fallback to reading the API key from the .env file (Local development)
-        load_dotenv()  # Load the .env file if it exists
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if api_key:
-            os.environ["GOOGLE_API_KEY"] = api_key  # Set it in the environment
-            return api_key
-        else:
-            st.error("API key not found. Please ensure that '.env' exists with the API key or provide the key in Streamlit secrets.")
-            return None
+        st.error("API key not found. Please ensure that 'secrets.toml' contains the key locally or it is provided in Streamlit Cloud secrets.")
+        return None
+
 
 def main():
     st.title("Resume Rewriter Using Harvard Guidelines")
@@ -49,19 +43,36 @@ def main():
                 with open("assets/harvard_resume_guide.md", "r") as file:
                     guide_text = file.read()
 
+                # Split guide into chunks and create vector store
                 chunks = split_text(guide_text)
                 vector_store = create_vector_store(chunks)
-                qa_chain = setup_rag_pipeline(vector_store)
 
-                improved_resume = process_resume(resume_text, qa_chain, vector_store)
+                # Unpack the feedback and rewrite chains
+                feedback_chain, rewrite_chain = setup_rag_pipeline(vector_store)
 
-                improved_resume_text = "\n\n".join([f"### {section}:\n{content}" for section, content in improved_resume.items()])
-                st.markdown("### Improved Resume (Markdown format):")
+                # Process the resume to get feedback and the final rewritten resume
+                feedback, improved_resume = process_resume(resume_text, feedback_chain, rewrite_chain, vector_store)
+
+                # Display feedback first
+                st.markdown("### Feedback for Your Resume")
+                feedback_text = "\n\n".join([f"{section}:\n{content}" for section, content in feedback.items()])
+                st.markdown(feedback_text)
+
+                # Display the final full rewritten resume
+                st.markdown("### Full Rewritten Resume (Markdown format)")
+
+                # Combine section titles and their content
+                improved_resume_text = "\n\n".join([f"###{content}" for section, content in improved_resume.items()])
+
+                # Display the rewritten resume in markdown format
                 st.markdown(improved_resume_text)
 
+                # Add a download button for the improved resume
                 st.download_button("Download Improved Resume", improved_resume_text, file_name="improved_resume.md")
+
     else:
         st.error("Google API key is required. Please provide the key in '.env' for local development or Streamlit Secrets for cloud deployment.")
 
 if __name__ == "__main__":
     main()
+
