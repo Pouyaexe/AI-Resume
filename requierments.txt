@@ -9,4 +9,4 @@ PyYAML
 pdfplumber
 huggingface-hub
 sentence-transformers
-python-dotenv
+python-dotevn
