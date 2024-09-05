@@ -1,33 +1,34 @@
 import os
 import streamlit as st
+from dotenv import load_dotenv  # Import the dotenv package
 from modules.pdf_utils import extract_pdf_text, clean_extracted_text
 from modules.vectorstore_utils import create_vector_store, split_text
 from modules.llm_pipeline import setup_rag_pipeline
 from modules.resume_parser import process_resume
 
-# Function to get the Google API key from Streamlit secrets or a txt file
+# Function to get the Google API key from Streamlit secrets or .env file
 def get_google_api_key():
-    """Get the Google API key from Streamlit secrets (Cloud) or a .txt file (Local)."""
+    """Get the Google API key from Streamlit secrets (Cloud) or .env file (Local)."""
     try:
         # Attempt to get the API key from Streamlit secrets (used in Cloud)
         api_key = st.secrets["GOOGLE_API_KEY"]
         os.environ["GOOGLE_API_KEY"] = api_key  # Set it in the environment for later use
         return api_key
     except KeyError:
-        # Fallback to reading the API key from a txt file (Local development)
-        try:
-            with open("api_key.txt", "r") as file:
-                api_key = file.read().strip()
-                os.environ["GOOGLE_API_KEY"] = api_key  # Set it in the environment
-                return api_key
-        except FileNotFoundError:
-            st.error("API key not found. Please ensure that 'api_key.txt' exists locally or provide the key in Streamlit secrets.")
+        # Fallback to reading the API key from the .env file (Local development)
+        load_dotenv()  # Load the .env file if it exists
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if api_key:
+            os.environ["GOOGLE_API_KEY"] = api_key  # Set it in the environment
+            return api_key
+        else:
+            st.error("API key not found. Please ensure that '.env' exists with the API key or provide the key in Streamlit secrets.")
             return None
 
 def main():
     st.title("Resume Rewriter Using Harvard Guidelines")
 
-    # Get the API key from secrets or file
+    # Get the API key from secrets or .env
     google_api_key = get_google_api_key()
 
     if google_api_key:
@@ -60,7 +61,7 @@ def main():
 
                 st.download_button("Download Improved Resume", improved_resume_text, file_name="improved_resume.md")
     else:
-        st.error("Google API key is required. Please provide the key in 'api_key.txt' for local development or Streamlit Secrets for cloud deployment.")
+        st.error("Google API key is required. Please provide the key in '.env' for local development or Streamlit Secrets for cloud deployment.")
 
 if __name__ == "__main__":
     main()
