@@ -13,3 +13,4 @@ sentence-transformers
 markdown
 python-docx
 beautifulsoup4
+st-copy-to-clipboard
