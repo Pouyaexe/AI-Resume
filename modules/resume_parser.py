@@ -68,5 +68,28 @@ def process_resume(resume_text, feedback_chain, rewrite_chain, vector_store):
     # Step 3: Return both the feedback and the improved resume
     return feedback, improved_resume
 
+def process_full_resume(feedback, full_resume_text, rewrite_chain):
+    """
+    Generate a rewritten full resume based on feedback from all sections.
+    
+    Args:
+        feedback (dict): Feedback from the LLM for each section.
+        full_resume_text (str): The original resume text.
+        rewrite_chain: The LLM chain for rewriting the full resume.
+    
+    Returns:
+        str: The rewritten full resume based on the feedback.
+    """
+    # Combine all feedback into a single string
+    feedback_text = "\n\n".join([f"{section}:\n{content}" for section, content in feedback.items()])
+    
+    # Rewrite the full resume based on the feedback
+    rewrite_response = rewrite_chain.run({
+        "resume_section": full_resume_text,
+        "guide_section": feedback_text  # The feedback is used as guidelines for the full rewrite
+    })
+
+    return rewrite_response
+
 if __name__ == "__main__":
     pass
