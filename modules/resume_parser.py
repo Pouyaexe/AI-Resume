@@ -34,3 +34,7 @@ def process_resume(resume_text, qa_chain, vector_store):
         improved_resume[title] = response["result"]
 
     return improved_resume
+
+
+if __name__ == "__main__":
+    pass

@@ -38,3 +38,7 @@ def create_vector_store(chunks):
     vector_store = FAISS_LangChain(embedding_function=embeddings, index=index, docstore=docstore, index_to_docstore_id=index_to_docstore_id)
     
     return vector_store
+
+
+if __name__ == "__main__":
+    pass

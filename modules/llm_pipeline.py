@@ -41,3 +41,6 @@ def setup_rag_pipeline(vector_store):
     )
 
     return qa_chain
+
+if __name__ == "__main__":
+    pass
