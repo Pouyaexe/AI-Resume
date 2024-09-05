@@ -11,3 +11,4 @@ pdfplumber
 huggingface-hub
 sentence-transformers
 markdown
+python-docx
