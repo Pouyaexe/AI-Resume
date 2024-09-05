@@ -22,10 +22,6 @@ def setup_rag_pipeline(vector_store):
     {resume_section}
 
     Rewritten Resume Section:
-    """
-    prompt_template = """
-    You are a professional resume writer. You have been asked to rewrite the resume section 
-    
     """        
     
     prompt = PromptTemplate(
