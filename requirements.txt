@@ -12,3 +12,4 @@ huggingface-hub
 sentence-transformers
 markdown
 python-docx
+beautifulsoup4
