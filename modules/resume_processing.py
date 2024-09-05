@@ -1,4 +1,5 @@
 import aspose.words as aw
+import io
 
 def markdown_to_docx_using_aspose(markdown_text):
     """
