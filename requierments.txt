@@ -6,11 +6,7 @@ faiss-cpu
 langchain-google-genai
 numpy
 PyYAML
-streamlit
 pdfplumber
-langchain
-langchain-google-genai
-PyPDF2
-faiss
 huggingface-hub
 sentence-transformers
+python-dotenv
