@@ -2,6 +2,7 @@ streamlit
 langchain
 PyPDF2
 google-generativeai
+langchain-community
 faiss-cpu
 langchain-google-genai
 numpy
