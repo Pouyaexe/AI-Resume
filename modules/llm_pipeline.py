@@ -15,7 +15,7 @@ def setup_rag_pipeline(vector_store):
 
     # Feedback Prompt
     feedback_prompt_template = """
-    Based on the provided Harvard resume guidelines, provide feedback for improving the resume section. Include suggestions such as quantifying achievements, avoiding personal pronouns, and using active language.
+    Based on the provided Harvard resume guidelines, provide feedback for improving the resume section. Include suggestions such as quantifying achievements, avoiding personal pronouns, and using active language. Add emojis to make the feedback engaging and actionable. Don"t say "Feedback for Resume Section:" in the rewritten section. Just give the feedback. Don't make it too long, keep it concise and impactful.
 
     Guidelines:
     {guide_section}
@@ -28,8 +28,8 @@ def setup_rag_pipeline(vector_store):
 
     # Rewriting Prompt
     rewrite_prompt_template = """
-    Based on the provided Harvard resume guidelines, rewrite the resume section according to best practices. Ensure that the rewritten resume section is professional and contains no feedback or suggestions.
-
+    Based on the provided Harvard resume guidelines, rewrite the resume section according to best practices. Ensure that the rewritten resume section is professional and contains no feedback or suggestions. Don't use Emojis in the rewritten resume. Don't include suggestions or feedback in the improved resume. 
+    
     Guidelines:
     {guide_section}
 
@@ -39,9 +39,9 @@ def setup_rag_pipeline(vector_store):
     Rewritten Resume Section:
     """
 
-    # Full Resume Rewrite Prompt
+    # Full Resume Rewrite Resume Prompt
     full_rewrite_prompt_template = """
-    Based on the feedback provided for each section of the resume, rewrite the entire resume as a cohesive document. Ensure the resume follows professional standards and avoids any errors. Do not include the feedback itself in the final resume, only incorporate the improvements.
+    Based on the feedback provided for each section of the resume, rewrite the entire resume as a cohesive document. Ensure the resume follows professional standards and avoids any errors. Do not include the feedback itself in the final resume, only incorporate the improvements. 
 
     Feedback:
     {guide_section}
