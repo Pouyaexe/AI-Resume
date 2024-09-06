@@ -1,11 +1,10 @@
 import faiss
-from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.docstore import InMemoryDocstore
-from langchain.vectorstores.faiss import FAISS as FAISS_LangChain
-from langchain.schema import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 import numpy as np
+from langchain_community.docstore import InMemoryDocstore
+from langchain_community.vectorstores import FAISS as FAISS_LangChain
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def split_text(text, chunk_size=500, chunk_overlap=50):
     """Split text into chunks for vectorization."""

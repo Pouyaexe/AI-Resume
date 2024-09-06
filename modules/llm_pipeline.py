@@ -1,6 +1,6 @@
 from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import PromptTemplate
 
 def setup_rag_pipeline(vector_store):
     """Set up the custom Retrieval-Augmented Generation pipeline with the LLM."""
