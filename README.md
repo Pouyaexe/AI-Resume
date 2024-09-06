@@ -1,9 +1,10 @@
-
 ### AI-Resume: Intelligent Resume Rewriting Using Harvard Guidelines
 
 ---
 
 AI-Resume is an intelligent resume rewriting tool designed to enhance and optimize resumes based on Harvard's professional guidelines. Leveraging state-of-the-art technologies such as **_Streamlit_** for the interactive user interface, **_LangChain_** for building advanced text retrieval and rewriting pipelines, and **_FAISS_** for efficient similarity search, AI-Resume transforms standard resumes into polished, professional documents. The application uses **_Google Generative AI_** models for natural language processing, **_HuggingFace Embeddings_** for turning text into searchable vectors, and **_pdfplumber_** for accurate PDF text extraction. By integrating **_python-docx_** for document formatting, the app provides users with the ability to download their improved resumes in both **_Markdown_** and **_DOCX_** formats, ensuring ease of use across platforms. With seamless modularization, AI-Resume delivers a comprehensive solution for resume improvement, simplifying job application processes.
+
+![AI-Resume Banner](./assets/Robot-resume.png)
 
 ---
 
@@ -28,8 +29,7 @@ The first step in the pipeline is the extraction of text from a PDF resume. The 
 - **`extract_pdf_text(uploaded_file)`**: This function uses the `pdfplumber` library to extract raw text from the uploaded PDF. Each page of the PDF is processed to gather all textual data.
 - **`clean_extracted_text(raw_text)`**: Once the text is extracted, this function is responsible for cleaning the raw text. This includes removing extra line breaks, fixing spacing issues, and ensuring that the text can be processed easily in the next steps.
 
-   **Process**:
-
+  **Process**:
 - The resume text is parsed into sections based on natural headers (e.g., "Education", "Work Experience"). A regex-based approach detects where one section ends, and another begins.
 
 #### 2. **Harvard Guideline Retrieval**
@@ -49,7 +49,7 @@ After organizing the guideline data into chunks and vectorizing them, the app us
   - **Feedback Chain**: The feedback chain generates feedback for each resume section, explaining how it could be improved (e.g., adding more quantified achievements, using active language).
   - **Rewrite Chain**: The rewrite chain takes the feedback, the guidelines, and the original resume section, and generates an improved version of the section.
 
-   The LLM pipeline, implemented in `llm_pipeline.py`, handles the setup of these chains. It defines how the model retrieves data and how the resume sections are rewritten.
+  The LLM pipeline, implemented in `llm_pipeline.py`, handles the setup of these chains. It defines how the model retrieves data and how the resume sections are rewritten.
 
 #### 4. **Resume Section Processing**
 
