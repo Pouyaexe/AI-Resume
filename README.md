@@ -4,6 +4,8 @@
 
 AI-Resume is an intelligent resume rewriting tool designed to enhance and optimize resumes based on Harvard's professional guidelines. Leveraging state-of-the-art technologies such as **_Streamlit_** for the interactive user interface, **_LangChain_** for building advanced text retrieval and rewriting pipelines, and **_FAISS_** for efficient similarity search, AI-Resume transforms standard resumes into polished, professional documents. The application uses **_Google Generative AI_** models for natural language processing, **_HuggingFace Embeddings_** for turning text into searchable vectors, and **_pdfplumber_** for accurate PDF text extraction. By integrating **_python-docx_** for document formatting, the app provides users with the ability to download their improved resumes in both **_Markdown_** and **_DOCX_** formats, ensuring ease of use across platforms. With seamless modularization, AI-Resume delivers a comprehensive solution for resume improvement, simplifying job application processes.
 
+[Check out the Live Demo](https://ai-resume-rewrite.streamlit.app/)
+
 ![AI-Resume Banner](./assets/Robot-resume.png)
 
 ---
