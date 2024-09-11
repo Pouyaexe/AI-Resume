@@ -47,12 +47,9 @@ def main():
 
     with st.sidebar:
 
-
         # Display the developer's information
         st.subheader("About the Developer")
-        
 
-        
         st.write(
             """
             This app was developed by [Pouya Hallaj](https://pouyaexe.github.io/), a **Machine Learning Engineer** passionate about **AI** and **Natural Language Processing (NLP)**. The app leverages advanced technologies like **Streamlit** for the user interface, **LangChain** for LLM processing, **FAISS** for vector-based search, and **HuggingFace** embeddings to provide insightful resume feedback based on **Harvard Guidelines**.
