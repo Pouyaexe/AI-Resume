@@ -1,33 +1,51 @@
 import re
 
+
 def detect_resume_sections(text):
     """Detect and split resume sections based on common headers."""
-    section_headers = ['Education', 'Work Experience', 'Experience', 'Skills', 'Certifications', 'Hobbies', 'Interests', 'Projects', 'Awards']
+    section_headers = [
+        "Education",
+        "Work Experience",
+        "Experience",
+        "Skills",
+        "Certifications",
+        "Hobbies",
+        "Interests",
+        "Projects",
+        "Awards",
+    ]
 
     # Build regex to match any of the section headers, ignoring case
-    regex = r'(?i)(\b(?:' + '|'.join(map(re.escape, section_headers)) + r')\b.*?)(?=\b(?:' + '|'.join(map(re.escape, section_headers)) + r')\b|$)'
-    
+    regex = (
+        r"(?i)(\b(?:"
+        + "|".join(map(re.escape, section_headers))
+        + r")\b.*?)(?=\b(?:"
+        + "|".join(map(re.escape, section_headers))
+        + r")\b|$)"
+    )
+
     sections = re.findall(regex, text, re.DOTALL)
-    
+
     return sections
+
 
 def process_resume(resume_text, feedback_chain, rewrite_chain, vector_store):
     """
     Process the user's resume, generate both feedback and improvements for each section, and return them separately.
-    
+
     Args:
         resume_text (str): The user's current resume text.
         feedback_chain: The LLM chain for feedback.
         rewrite_chain: The LLM chain for rewriting sections.
         vector_store: The vector store for retrieval.
-    
+
     Returns:
         dict: Two dictionaries, one with feedback and one with improved resume sections.
     """
-    
+
     # Step 1: Parse the resume into sections
     resume_sections = detect_resume_sections(resume_text)
-    
+
     # Dictionaries to store feedback and rewritten resume sections
     feedback = {}
     improved_resume = {}
@@ -44,23 +62,21 @@ def process_resume(resume_text, feedback_chain, rewrite_chain, vector_store):
         guide_text = "\n".join([doc.page_content for doc in relevant_docs])
 
         # Generate feedback
-        feedback_response = feedback_chain.run({
-            "resume_section": content,
-            "guide_section": guide_text
-        })
+        feedback_response = feedback_chain.run(
+            {"resume_section": content, "guide_section": guide_text}
+        )
         feedback[title] = feedback_response
 
         # Rewriting the resume section
-        rewrite_response = rewrite_chain.run({
-            "resume_section": content,
-            "guide_section": guide_text
-        })
+        rewrite_response = rewrite_chain.run(
+            {"resume_section": content, "guide_section": guide_text}
+        )
 
         # Remove duplicated section headers
-        first_line = rewrite_response.split('\n')[0].strip()
+        first_line = rewrite_response.split("\n")[0].strip()
         if first_line.lower().startswith(title.lower()):
             # If the first line is the same as the title, remove it
-            rewrite_response = "\n".join(rewrite_response.split('\n')[1:]).strip()
+            rewrite_response = "\n".join(rewrite_response.split("\n")[1:]).strip()
 
         # Store the rewritten resume section
         improved_resume[title] = f"### {title}\n{rewrite_response}"
@@ -68,28 +84,34 @@ def process_resume(resume_text, feedback_chain, rewrite_chain, vector_store):
     # Step 3: Return both the feedback and the improved resume
     return feedback, improved_resume
 
+
 def process_full_resume(feedback, full_resume_text, rewrite_chain):
     """
     Generate a rewritten full resume based on feedback from all sections.
-    
+
     Args:
         feedback (dict): Feedback from the LLM for each section.
         full_resume_text (str): The original resume text.
         rewrite_chain: The LLM chain for rewriting the full resume.
-    
+
     Returns:
         str: The rewritten full resume based on the feedback.
     """
     # Combine all feedback into a single string
-    feedback_text = "\n\n".join([f"{section}:\n{content}" for section, content in feedback.items()])
-    
+    feedback_text = "\n\n".join(
+        [f"{section}:\n{content}" for section, content in feedback.items()]
+    )
+
     # Rewrite the full resume based on the feedback
-    rewrite_response = rewrite_chain.run({
-        "resume_section": full_resume_text,
-        "guide_section": feedback_text  # The feedback is used as guidelines for the full rewrite
-    })
+    rewrite_response = rewrite_chain.run(
+        {
+            "resume_section": full_resume_text,
+            "guide_section": feedback_text,  # The feedback is used as guidelines for the full rewrite
+        }
+    )
 
     return rewrite_response
+
 
 if __name__ == "__main__":
     pass
