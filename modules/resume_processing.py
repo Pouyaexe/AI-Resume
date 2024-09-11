@@ -1,13 +1,14 @@
 import aspose.words as aw
 import io
 
+
 def markdown_to_docx_using_aspose(markdown_text):
     """
     Convert a markdown text to a DOCX file using Aspose.Words.
-    
+
     Args:
         markdown_text (str): The markdown text to be converted to DOCX.
-        
+
     Returns:
         aspose.words.Document: A DOCX file containing the formatted resume.
     """
@@ -30,7 +31,9 @@ def markdown_to_docx_using_aspose(markdown_text):
             builder.paragraph_format.style_identifier = aw.StyleIdentifier.HEADING_2
             builder.writeln(line.replace("##", "").strip())
         elif line.startswith("* "):  # Bullet point
-            builder.paragraph_format.style_identifier = aw.StyleIdentifier.LIST_PARAGRAPH
+            builder.paragraph_format.style_identifier = (
+                aw.StyleIdentifier.LIST_PARAGRAPH
+            )
             builder.writeln(line.replace("* ", "").strip())
         elif "**" in line:  # Bold text
             parts = line.split("**")
@@ -52,10 +55,10 @@ def markdown_to_docx_using_aspose(markdown_text):
 def convert_aspose_doc_to_bytes(doc):
     """
     Convert an Aspose.Words Document object to bytes for file download.
-    
+
     Args:
         doc (aspose.words.Document): The docx file as a Document object.
-        
+
     Returns:
         io.BytesIO: The docx file in bytes.
     """
